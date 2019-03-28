@@ -25,12 +25,7 @@ module ClamAV
     class ReadTimeoutError < ConnectionError; end
     class WriteTimeoutError < ConnectionError; end
 
-    attr_writer :unix_socket
-    attr_writer :tcp_host
-    attr_writer :tcp_port
-    attr_writer :connect_timeout
-    attr_writer :write_timeout
-    attr_writer :read_timeout
+    attr_accessor :options
     attr_writer :connection
 
     def initialize(*args)
@@ -39,11 +34,40 @@ module ClamAV
         when Connection
           @connection = arg
         when Hash
-          arg.each do |attr, value|
-            send("#{attr}=", value)
+          @options = env_options.inject({}) do |acc, (option, default)|
+            acc[option] = arg[option] || default
+            acc
           end
         end
       end
+    end
+
+    [
+      :unix_socket,
+      :tcp_host,
+      :tcp_port,
+      :connect_timeout,
+      :write_timeout,
+      :read_timeout,
+    ].each do |m|
+      define_method(m) do
+        options[m]
+      end
+
+      define_method("#{m}=") do |value|
+        options[m] = value
+      end
+    end
+
+    def env_options
+      @env_options ||= {
+        unix_socket: ENV.fetch('CLAMD_UNIX_SOCKET', '/var/run/clamav/clamd.ctl'),
+        tcp_host: ENV.fetch('CLAMD_TCP_HOST', nil),
+        tcp_port: ENV.fetch('CLAMD_TCP_PORT', nil),
+        connect_timeout: ENV.fetch("CLAMD_TCP_CONNECT_TIMEOUT", nil),
+        write_timeout: ENV.fetch("CLAMD_TCP_WRITE_TIMEOUT", nil),
+        read_timeout: ENV.fetch("CLAMD_TCP_READ_TIMEOUT", nil),
+      }
     end
 
     def execute(command)
@@ -96,54 +120,6 @@ module ClamAV
       @connection.disconnect!
 
       @connection = nil
-    end
-
-    def tcp_host
-      @tcp_host ||= ENV.fetch('CLAMD_TCP_HOST', nil)
-    end
-
-    def tcp_port
-      @tcp_port ||= ENV.fetch('CLAMD_TCP_PORT', nil)
-    end
-
-    def unix_socket
-      @unix_socket ||= ENV.fetch('CLAMD_UNIX_SOCKET', '/var/run/clamav/clamd.ctl')
-    end
-
-    def connect_timeout
-      @connect_timeout ||=
-        case value = ENV.fetch('CLAMD_TCP_CONNECT_TIMEOUT', nil)
-        when String
-          value.empty? && nil || value
-        when Integer
-          value
-        else
-          nil
-        end
-    end
-
-    def read_timeout
-      @read_timeout ||=
-        case value = ENV.fetch('CLAMD_TCP_READ_TIMEOUT', nil)
-        when String
-          value.empty? && nil || value
-        when Integer
-          value
-        else
-          nil
-        end
-    end
-
-    def write_timeout
-      @write_timeout ||=
-        case value = ENV.fetch('CLAMD_TCP_WRITE_TIMEOUT', nil)
-        when String
-          value.empty? && nil || value
-        when Integer
-          value
-        else
-          nil
-        end
     end
 
     def tcp?
