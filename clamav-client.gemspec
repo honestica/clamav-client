@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.description   = spec.summary
   spec.homepage      = "https://github.com/franckverrot/clamav-client"
   spec.license       = "GPL-v3"
-  spec.required_ruby_version = '>= 2.1'
+  spec.required_ruby_version = '>= 2.5'
 
   spec.files = Dir['{lib,test}/**/*', 'LICENSE.txt', 'ChangeLog.md', 'Rakefile', 'README.md'].reject { |f| f['test/fixtures'] }
 
