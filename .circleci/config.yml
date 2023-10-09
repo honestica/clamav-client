@@ -10,35 +10,25 @@ shared: &shared
     - run:
         name: build image
         command: |
-          docker build -f test/Dockerfile --build-arg RUBY_VERSION -t franckverrot/clamav-client .
+          docker build -f test/Dockerfile --build-arg RUBY_VERSION -t honestica/clamav-client .
     - run:
         name: run tests
         command: |
-          docker run franckverrot/clamav-client rake
+          docker run honestica/clamav-client rake
 
 jobs:
-  "2.4":
-    <<: *shared
-    environment:
-      RUBY_VERSION=2.4-stretch
-  "2.5":
-    <<: *shared
-    environment:
-      RUBY_VERSION=2.5-stretch
-  "2.6":
-    <<: *shared
-    environment:
-      RUBY_VERSION=2.6-stretch
   "2.7":
     <<: *shared
     environment:
       RUBY_VERSION=2.7-slim
+  "3.2":
+    <<: *shared
+    environment:
+      RUBY_VERSION=3.2-slim
 
 workflows:
   version: 2
   build:
     jobs:
-      - "2.4"
-      - "2.5"
-      - "2.6"
       - "2.7"
+      - "3.2"

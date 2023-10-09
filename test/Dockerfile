@@ -1,6 +1,6 @@
 ARG RUBY_VERSION
 FROM ruby:${RUBY_VERSION}
-LABEL maintainer="franck@verrot.fr"
+LABEL maintainer="victor.pugin@lifen.fr"
 
 WORKDIR /clamav-client
 ADD Gemfile /clamav-client

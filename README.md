@@ -201,3 +201,10 @@ GPLv3. COMMERCIAL license available upon request.
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+### Testing
+
+The test suite can be run locally before pushing changes :
+
+    $ docker run --rm -it $(docker build -f test/Dockerfile --build-arg RUBY_VERSION=3.2-slim -q .) rake
+    
