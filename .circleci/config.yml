@@ -25,6 +25,14 @@ jobs:
     <<: *shared
     environment:
       RUBY_VERSION=3.2-slim
+  publish:
+    working_directory: ~/repo
+    docker:
+      - image: cimg/ruby:3.2
+    steps:
+      - run: bundle --path vendor/bundle
+      - run: bundle exec rake build
+      - run: curl -F package=@$(ls -d -1 pkg/*.gem) https://$GEMFURY_TOKEN@push.fury.io/lifen
 
 workflows:
   version: 2
@@ -32,3 +40,18 @@ workflows:
     jobs:
       - "2.7"
       - "3.2"
+      - hold-publish:
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+      - publish:
+          requires:
+            - "2.7"
+            - "3.2"
+            - hold-publish
+          filters:
+            branches:
+              only:
+                - master
