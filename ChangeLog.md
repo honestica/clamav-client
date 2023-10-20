@@ -1,5 +1,9 @@
 # Unreleased
 
+# 3.3.0
+
+  * Add support for Ruby 3.2
+  * Update packed files in gem
 # 3.2.0
 
   * Add `ClamAV::Client#ping` as a short-hand for executing a ping
