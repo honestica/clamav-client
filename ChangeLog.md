@@ -1,5 +1,10 @@
 # Unreleased
 
+# 3.4.0
+
+  * Add `connect_timeout`, `write_timeout` and `read_timeout` configurations
+  * Add gem specific exceptions classes for connection errors
+
 # 3.3.0
 
   * Add support for Ruby 3.2
