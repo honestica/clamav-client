@@ -26,9 +26,10 @@ module ClamAV
     class WriteTimeoutError < ConnectionError; end
 
     attr_accessor :options
-    attr_writer :connection
 
     def initialize(*args)
+      @options = env_options
+
       args.each do |arg|
         case arg
         when Connection
@@ -117,9 +118,9 @@ module ClamAV
     def disconnect!
       return true if @connection.nil?
 
-      @connection.disconnect!
-
-      @connection = nil
+      @connection.disconnect!.tap do
+        @connection = nil
+      end
     end
 
     def tcp?
@@ -131,19 +132,13 @@ module ClamAV
     end
 
     def build_socket
-      return Socket.tcp(tcp_host, tcp_port, tcp_opts) if tcp?
+      return Socket.tcp(tcp_host, tcp_port, connect_timeout: connect_timeout) if tcp?
 
       ::UNIXSocket.new(unix_socket)
     rescue Errno::ETIMEDOUT => e
       raise ConnectTimeoutError.new(e.to_s)
     rescue SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED => e
       raise ConnectionError.new(e.to_s)
-    end
-
-    def tcp_opts
-      {}.tap do |o|
-        o[:connect_timeout] = connect_timeout if connect_timeout
-      end
     end
 
     def ping

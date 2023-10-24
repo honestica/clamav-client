@@ -105,7 +105,7 @@ module ClamAV
     def disconnect!
       return true if @socket.nil?
 
-      @socket.closed?
+      @socket.close
 
       @socket.closed?.tap do
         @socket = nil

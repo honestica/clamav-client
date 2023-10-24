@@ -17,23 +17,30 @@
 require 'test_helper'
 
 describe "ClamAV::Connection" do
-  let(:wrapper_mock) { Minitest::Mock.new }
-  let(:socket_mock)  { Minitest::Mock.new }
-
-  it "requires a port and a wrapper" do
-    assert_raises(ArgumentError) { ClamAV::Connection.new }
-    assert_raises(ArgumentError) { ClamAV::Connection.new(port: 'foo') }
-    assert_raises(ArgumentError) { ClamAV::Connection.new(wrapper: nil) }
+  let(:client)  { ClamAV::Client.new }
+  let(:wrapper) { ClamAV::Wrappers::NewLineWrapper.new }
+  let(:socket_mock)  do
+    mock = Minitest::Mock.new
+    mock.expect(:!, false)
   end
 
-  it "can be constructed with a port and wrapper class" do
-    ClamAV::Connection.new(socket: socket_mock, wrapper: wrapper_mock)
+  it "requires a client, a socket and a wrapper" do
+    assert_raises(ArgumentError) { ClamAV::Connection.new }
+    assert_raises(ArgumentError) { ClamAV::Connection.new(socket: socket_mock, wrapper: wrapper) }
+    assert_raises(ArgumentError) { ClamAV::Connection.new(client: client, wrapper: wrapper) }
+    assert_raises(ArgumentError) { ClamAV::Connection.new(client: client, socket: socket_mock) }
+  end
+
+  it "can be constructed with a client, a socket and wrapper class" do
+    ClamAV::Connection.new(client: client, socket: socket_mock, wrapper: wrapper)
   end
 
   it "support raw writes" do
     socket_mock.expect(:write, nil, ["foo"])
 
-    conn = ClamAV::Connection.new(socket: socket_mock, wrapper: wrapper_mock)
+    conn = ClamAV::Connection.new(client: client, socket: socket_mock, wrapper: wrapper)
     conn.raw_write("foo")
+
+    socket_mock.verify
   end
 end

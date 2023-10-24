@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.license       = "GPL-v3"
   spec.required_ruby_version = '>= 2.5'
 
-  spec.files = Dir['{lib,test}/**/*', 'LICENSE.txt', 'ChangeLog.md', 'Rakefile', 'README.md'].reject { |f| f['test/fixtures'] }
+  spec.files = Dir['{lib,test}/**/*', 'LICENSE.txt', 'ChangeLog.md', 'Rakefile', 'README.md', 'Gemfile', 'clamav-client.gemspec']
 
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
@@ -21,6 +21,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "pry"
-  spec.add_development_dependency "pry-byebug"
   spec.add_development_dependency "minitest"
 end
