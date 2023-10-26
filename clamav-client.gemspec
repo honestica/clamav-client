@@ -3,15 +3,16 @@ $:<< 'lib'
 
 Gem::Specification.new do |spec|
   spec.name          = "clamav-client"
-  spec.version       = "3.3.0"
+  spec.version       = "3.4.0"
   spec.authors       = ["Franck Verrot"]
   spec.email         = ["franck@verrot.fr"]
   spec.summary       = %q{ClamAV::Client connects to a Clam Anti-Virus clam daemon and send commands.}
   spec.description   = spec.summary
   spec.homepage      = "https://github.com/franckverrot/clamav-client"
   spec.license       = "GPL-v3"
+  spec.required_ruby_version = '>= 2.5'
 
-  spec.files = Dir['{lib,test}/**/*', 'LICENSE.txt', 'ChangeLog.md', 'Rakefile', 'README.md'].reject { |f| f['test/fixtures'] }
+  spec.files = Dir['{lib,test}/**/*', 'LICENSE.txt', 'ChangeLog.md', 'Rakefile', 'README.md', 'Gemfile', 'clamav-client.gemspec']
 
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})

@@ -26,6 +26,8 @@ module ClamAV
           buff << char
         end
         buff
+      rescue TypeError => e
+        raise ::ClamAV::Client::ConnectionError.new(e.to_s)
       end
   end
 end
