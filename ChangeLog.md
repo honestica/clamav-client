@@ -1,5 +1,9 @@
 # Unreleased
 
+# 3.4.1
+
+  * Drop fixtures from the gem
+
 # 3.4.0
 
   * Add `connect_timeout`, `write_timeout` and `read_timeout` configurations
