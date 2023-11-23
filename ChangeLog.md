@@ -1,5 +1,9 @@
 # Unreleased
 
+# 3.4.2
+
+  * Fix `write_request` and `read_response` with timeout configuration enabled
+
 # 3.4.1
 
   * Drop fixtures from the gem

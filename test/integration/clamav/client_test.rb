@@ -66,6 +66,26 @@ describe "ClamAV::Client Integration Tests" do
       it "can be used as #scan" do
         assert_equal client.execute(ClamAV::Commands::ScanCommand.new(dir)), client.send(:scan, dir)
       end
+
+      describe "with timeout configuration" do
+        let(:client) { ClamAV::Client.new(connect_timeout: 1, write_timeout: 1, read_timeout: 1) }
+
+        it "can be started" do
+          results = client.execute(ClamAV::Commands::ScanCommand.new(dir))
+
+          expected_results = {
+            "#{base_path}/test/fixtures/clamavtest.gz"  => ClamAV::VirusResponse,
+            "#{base_path}/test/fixtures/clamavtest.txt" => ClamAV::VirusResponse,
+            "#{base_path}/test/fixtures/clamavtest.zip" => ClamAV::VirusResponse,
+            "#{base_path}/test/fixtures/innocent.txt"   => ClamAV::SuccessResponse
+          }
+
+          results.each do |result|
+            expected_result = expected_results[result.file]
+            assert_equal expected_result, result.class
+          end
+        end
+      end
     end
 
     describe "instream" do

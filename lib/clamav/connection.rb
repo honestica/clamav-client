@@ -76,7 +76,7 @@ module ClamAV
     end
 
     def write_request_with_timeout(str)
-      timeout(connect_timeout) do
+      Timeout::timeout(connect_timeout) do
         write_request_without_timeout(str)
       end
     rescue Timeout::Error => e
@@ -95,7 +95,7 @@ module ClamAV
     end
 
     def read_response_with_timeout
-      timeout(read_timeout) do
+      Timeout::timeout(read_timeout) do
         read_response_without_timeout
       end
     rescue Timeout::Error => e
